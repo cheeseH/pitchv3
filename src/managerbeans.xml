@@ -22,9 +22,30 @@
 		<property name="subActivityDAO" ref="subActivityDAO"></property>
 	</bean>
 	
-	<bean id="roFactory"
-		class="net._100steps.bbter.service.api.rmi.defaultImpl.ROFactory">
-		<property name="pitchActivityDAO" ref="pitchActivityDAO"></property>
-		<property name="subActivityDAO" ref="subActivityDAO"></property>
+<bean id="roFactory"
+		class="net._100steps.labelsys.service.api.rmi.ROFactory">
+		<constructor-arg value="//localhost"/>
+		<constructor-arg value="8199"/>
 	</bean>
+	
+	<bean id="userManagerRO"
+		factory-bean="roFactory" factory-method="getRO">
+		<constructor-arg value="UserManagerRO"/>
+	</bean>
+	
+	<bean id="fileManagerRO"
+		factory-bean="roFactory" factory-method="getRO">
+		<constructor-arg value="FileManagerRO"/>
+	</bean>
+	
+	<bean id="departmentManagerRO"
+		factory-bean="roFactory" factory-method="getRO">
+		<constructor-arg value="DepartmentManagerRO"/>
+	</bean>
+	
+	<bean id="groupManagerRO"
+		factory-bean="roFactory" factory-method="getRO">
+		<constructor-arg value="GroupManagerRO"/>
+	</bean>
+	
 </beans>
