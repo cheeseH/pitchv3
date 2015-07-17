@@ -21,4 +21,10 @@
 		<property name="pitchActivityDAO" ref="pitchActivityDAO"></property>
 		<property name="subActivityDAO" ref="subActivityDAO"></property>
 	</bean>
+	
+	<bean id="roFactory"
+		class="net._100steps.bbter.service.api.rmi.defaultImpl.ROFactory">
+		<property name="pitchActivityDAO" ref="pitchActivityDAO"></property>
+		<property name="subActivityDAO" ref="subActivityDAO"></property>
+	</bean>
 </beans>
