@@ -6,5 +6,14 @@
 	<include file="struts-default.xml"/>
 	<constant name="struts.objectFactory" value="spring" />
 	
-
+	<package name="activity" namespace="/activity" extends="struts-default">
+		<action name="addActivity" class="activityAction" method="addActivity">
+			<result name="success">/WEB-INF/JSP/success.jsp</result>
+			<result name="fail">/WEB-INF/JSP/fail.jsp</result>
+		</action>
+		<action name="addSubActivity" class="activityAction" method="addSubActivity">
+			<result name="success">/WEB-INF/JSP/success.jsp</result>
+			<result name="fail">/WEB-INF/JSP/fail.jsp</result>
+		</action>
+	</package>
 </struts>

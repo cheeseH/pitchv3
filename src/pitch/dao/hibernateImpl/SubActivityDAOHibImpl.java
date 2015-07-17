@@ -22,7 +22,7 @@ public class SubActivityDAOHibImpl implements SubActivityDAO{
 	public void add(SubActivity activity) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().save(activity);
+			this.sessionFactory.openSession().save(activity);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -34,7 +34,7 @@ public class SubActivityDAOHibImpl implements SubActivityDAO{
 	public void remove(int activityId) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().createQuery("from SubActivity as sa where sa.id = ?").setInteger(0, activityId);
+			this.sessionFactory.openSession().createQuery("from SubActivity as sa where sa.id = ?").setInteger(0, activityId);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -46,7 +46,7 @@ public class SubActivityDAOHibImpl implements SubActivityDAO{
 	public void update(SubActivity activity) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().update(activity);
+			this.sessionFactory.openSession().update(activity);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -59,7 +59,7 @@ public class SubActivityDAOHibImpl implements SubActivityDAO{
 	public List<SubActivity> getByPitchId(int pitchActivityId) {
 		// TODO Auto-generated method stub
 		try{
-			return (List<SubActivity>)this.sessionFactory.getCurrentSession().createQuery("from SubActivity as sa where sa.pitchActivityId = ?").setInteger(0,pitchActivityId).list();
+			return (List<SubActivity>)this.sessionFactory.openSession().createQuery("from SubActivity as sa where sa.pitchActivityId = ?").setInteger(0,pitchActivityId).list();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -70,7 +70,7 @@ public class SubActivityDAOHibImpl implements SubActivityDAO{
 	public SubActivity getById(int activityId) {
 		// TODO Auto-generated method stub
 		try{
-			return (SubActivity)this.sessionFactory.getCurrentSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId).uniqueResult();
+			return (SubActivity)this.sessionFactory.openSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId).uniqueResult();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}

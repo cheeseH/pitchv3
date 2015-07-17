@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "matching_infos")
+@Table(name = "pitch_assignment")
 public class Assignment {
 	int id;
 	int userId;

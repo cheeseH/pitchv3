@@ -1,10 +1,13 @@
 package pitch.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
+@Entity
+@Table(name="pitch_user")
 public class PitchUser {
 	int id;
 	String studentNumber;

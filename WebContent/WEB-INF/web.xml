@@ -15,7 +15,8 @@
 			classpath:applicationContext.xml,
 			classpath:daobeans.xml,
 			classpath:managerbeans.xml,
-			classpath:database.xml
+			classpath:database.xml,
+			classpath:actionbeans.xml
 		</param-value>
   </context-param>
   <context-param>

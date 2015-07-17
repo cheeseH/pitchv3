@@ -20,7 +20,7 @@ SessionFactory sessionFactory;
 	public void add(TimeTable timeTable) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().save(timeTable);
+			this.sessionFactory.openSession().save(timeTable);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -32,7 +32,7 @@ SessionFactory sessionFactory;
 	public void remove(int ttId) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().createQuery("from TimeTbale as tt where tt.id = ?").setInteger(0, ttId);
+			this.sessionFactory.openSession().createQuery("from TimeTbale as tt where tt.id = ?").setInteger(0, ttId);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -45,7 +45,7 @@ SessionFactory sessionFactory;
 	public void update(TimeTable timeTable) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().update(timeTable);
+			this.sessionFactory.openSession().update(timeTable);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -59,7 +59,7 @@ SessionFactory sessionFactory;
 	public TimeTable getById(int id) {
 		// TODO Auto-generated method stub
 		try{
-			return (TimeTable)this.sessionFactory.getCurrentSession().createQuery("from TimeTable as tt where tt.id = ?").setInteger(0,id ).uniqueResult();
+			return (TimeTable)this.sessionFactory.openSession().createQuery("from TimeTable as tt where tt.id = ?").setInteger(0,id ).uniqueResult();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -70,7 +70,7 @@ SessionFactory sessionFactory;
 	public TimeTable getByUserId(int userId) {
 		// TODO Auto-generated method stub
 		try{
-			return (TimeTable)this.sessionFactory.getCurrentSession().createQuery("from TimeTable as tt where tt.userId = ?").setInteger(0, userId).uniqueResult();
+			return (TimeTable)this.sessionFactory.openSession().createQuery("from TimeTable as tt where tt.userId = ?").setInteger(0, userId).uniqueResult();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}

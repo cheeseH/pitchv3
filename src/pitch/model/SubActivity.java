@@ -28,7 +28,7 @@ public class SubActivity {
 	public void setId(int id) {
 		this.id = id;
 	}
-	@Column(name="pitchActivityId")
+	@Column(name="activity_id")
 	public int getPitchActivityId() {
 		return pitchActivityId;
 	}

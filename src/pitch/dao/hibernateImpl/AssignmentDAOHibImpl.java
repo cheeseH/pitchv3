@@ -23,7 +23,7 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 	public void add(Assignment assignment) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().save(assignment);
+			this.sessionFactory.openSession().save(assignment);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -34,7 +34,7 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 	public void remove(int assignmentId) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().createQuery("delete from Assignment as a where a.id=?").setInteger(0, assignmentId);
+			this.sessionFactory.openSession().createQuery("delete from Assignment as a where a.id=?").setInteger(0, assignmentId);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -46,7 +46,7 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 	public void update(Assignment assignment) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().update(assignment);
+			this.sessionFactory.openSession().update(assignment);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -58,7 +58,7 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 	public Assignment getById(int assignmentId) {
 		// TODO Auto-generated method stub
 		try{
-			return (Assignment)this.sessionFactory.getCurrentSession().createQuery("from Assignment as a where a.id = ?").setInteger(0, assignmentId).uniqueResult();
+			return (Assignment)this.sessionFactory.openSession().createQuery("from Assignment as a where a.id = ?").setInteger(0, assignmentId).uniqueResult();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -70,7 +70,7 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 	public List<Assignment> getBySubActivityId(int saId) {
 		// TODO Auto-generated method stub
 		try{
-			return (List<Assignment>)this.sessionFactory.getCurrentSession().createQuery("from Assignment as a where a.subActivityId = ?").list();
+			return (List<Assignment>)this.sessionFactory.openSession().createQuery("from Assignment as a where a.subActivityId = ?").list();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}

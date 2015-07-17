@@ -22,7 +22,7 @@ public class PitchActivityDAOHibImpl implements PitchActivityDAO {
 	public void add(PitchActivity pa) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().save(pa);
+			this.sessionFactory.openSession().save(pa);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -34,7 +34,7 @@ public class PitchActivityDAOHibImpl implements PitchActivityDAO {
 	public void update(PitchActivity pa) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().update(pa);
+			this.sessionFactory.openSession().update(pa);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -46,7 +46,7 @@ public class PitchActivityDAOHibImpl implements PitchActivityDAO {
 	public void remove(int activityId) {
 		// TODO Auto-generated method stub
 		try{
-			this.sessionFactory.getCurrentSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId);
+			this.sessionFactory.openSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId);
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -57,7 +57,7 @@ public class PitchActivityDAOHibImpl implements PitchActivityDAO {
 	public PitchActivity getById(int activityId) {
 		// TODO Auto-generated method stub
 		try{
-			return (PitchActivity)this.sessionFactory.getCurrentSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId).uniqueResult();
+			return (PitchActivity)this.sessionFactory.openSession().createQuery("from PitchActivity as pa where pa.id = ?").setInteger(0, activityId).uniqueResult();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
@@ -70,7 +70,7 @@ public class PitchActivityDAOHibImpl implements PitchActivityDAO {
 	public List<PitchActivity> getAll() {
 		// TODO Auto-generated method stub
 		try{
-			return (List<PitchActivity>)this.sessionFactory.getCurrentSession().createQuery("from PitchActivity as pa").list();
+			return (List<PitchActivity>)this.sessionFactory.openSession().createQuery("from PitchActivity as pa").list();
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}

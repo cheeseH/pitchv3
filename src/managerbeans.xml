@@ -11,5 +11,14 @@
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
-
+	<bean id="timeTableManager"
+		class="pitch.manager.defaultImpl.TimeTableManagerDefaultImpl">
+		<property name="timeTableDAO" ref="timeTableDAO"></property>
+	</bean>
+	
+	<bean id="activityManager"
+		class="pitch.manager.defaultImpl.ActivityManagerDefaultImpl">
+		<property name="pitchActivityDAO" ref="pitchActivityDAO"></property>
+		<property name="subActivityDAO" ref="subActivityDAO"></property>
+	</bean>
 </beans>

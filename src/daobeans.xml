@@ -11,6 +11,18 @@
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
-
+	<bean id="subActivityDAO"
+		class="pitch.dao.hibernateImpl.SubActivityDAOHibImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
 	
+	<bean id="pitchActivityDAO"
+		class="pitch.dao.hibernateImpl.PitchActivityDAOHibImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="timeTableDAO"
+		class="pitch.dao.hibernateImpl.TimeTableDAOHibImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
 </beans>
