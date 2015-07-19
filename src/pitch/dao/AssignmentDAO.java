@@ -10,4 +10,5 @@ public interface AssignmentDAO {
 	public void update(Assignment assignment);
 	public Assignment getById(int assignmentId);
 	public List<Assignment> getBySubActivityId(int saId);
+	public Assignment getByActivityAndUserId(int activityId,int userId);
 }

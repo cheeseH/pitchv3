@@ -13,6 +13,14 @@ public class Assignment {
 	int id;
 	int userId;
 	int subActivityId;
+	int checked;
+	@Column
+	public int getChecked() {
+		return checked;
+	}
+	public void setChecked(int checked) {
+		this.checked = checked;
+	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable=false)

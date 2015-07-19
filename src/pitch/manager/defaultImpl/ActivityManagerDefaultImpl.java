@@ -5,18 +5,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.xiao.util.json.xjson.JArrayObj;
+import com.xiao.util.json.xjson.JMapObj;
+
+import pitch.dao.AssignmentDAO;
 import pitch.dao.DAOException;
 import pitch.dao.PitchActivityDAO;
+import pitch.dao.PitchUserDAO;
 import pitch.dao.SubActivityDAO;
 import pitch.manager.ActivityManager;
 import pitch.manager.Status;
+import pitch.model.Assignment;
 import pitch.model.PitchActivity;
+import pitch.model.PitchUser;
 import pitch.model.SubActivity;
 
 public class ActivityManagerDefaultImpl implements ActivityManager {
 
 	PitchActivityDAO pitchActivityDAO;
 	SubActivityDAO subActivityDAO;
+	PitchUserDAO	pitchUserDAO;
+	AssignmentDAO assignmentDAO;
 	public void setPitchActivityDAO(PitchActivityDAO pitchActivityDAO) {
 		this.pitchActivityDAO = pitchActivityDAO;
 	}
@@ -89,9 +98,27 @@ public class ActivityManagerDefaultImpl implements ActivityManager {
 	}
 
 	@Override
-	public Status addHeader(Map<String, Object> request) {
+	public Status addHeader(String studentNumber,int subPitchActivityIdt) {
 		// TODO Auto-generated method stub
-		return null;
+		try{
+			Status s = new Status();
+			PitchUser user = pitchUserDAO.getByStudentNumber(studentNumber);
+			SubActivity sa = subActivityDAO.getById(subPitchActivityIdt);
+			sa.setHeader(user.getId());
+			Assignment assignment = assignmentDAO.getByActivityAndUserId(sa.getId(), user.getId());
+			if(assignment == null){
+				Assignment newAssignment = new Assignment();
+				newAssignment.setSubActivityId(subPitchActivityIdt);
+				newAssignment.setUserId(user.getId());
+				assignmentDAO.add(newAssignment);
+			}
+			subActivityDAO.update(sa);
+			return Status.OK();
+		}catch(DAOException e){
+			e.printStackTrace();
+			return Status.Error(500, null);
+			
+		}
 	}
 
 	@Override
@@ -101,15 +128,67 @@ public class ActivityManagerDefaultImpl implements ActivityManager {
 	}
 
 	@Override
-	public Status checkIn(Map<String, Object> request) {
+	public Status checkIn(int userId,int activityId) {
 		// TODO Auto-generated method stub
-		return null;
+		try{
+			Assignment assgnment =  assignmentDAO.getByActivityAndUserId(activityId, userId);
+			if(assgnment == null){
+				JMapObj map = new JMapObj();
+				JArrayObj array = new JArrayObj();
+				map.put("assginment", "not such an assignment found");
+				array.add(map);
+				Status s  = new Status ();
+				s.setCode(501);
+				s.setMsg(array);
+				return s;
+			}
+			assgnment.setChecked(1);
+			assignmentDAO.update(assgnment);
+			return Status.OK();
+		}catch(DAOException e){
+			e.printStackTrace();
+			return Status.Error(500, null);
+		}
 	}
 
 	@Override
-	public Status replace(Map<String, Object> request) {
+	public Status replace(int oldUserId,String newUserStudentNumber,int activityId) {
 		// TODO Auto-generated method stub
-		return null;
+		try{
+			Assignment assgnment =  assignmentDAO.getByActivityAndUserId(activityId, oldUserId);
+			if(assgnment == null){
+				JMapObj map = new JMapObj();
+				JArrayObj array = new JArrayObj();
+				map.put("assginment", "not such an assignment found");
+				array.add(map);
+				Status s  = new Status ();
+				s.setCode(501);
+				s.setMsg(array);
+				return s;
+			}
+		
+			PitchUser user = pitchUserDAO.getByStudentNumber(newUserStudentNumber);
+			if(user == null){
+				JMapObj map = new JMapObj();
+				JArrayObj array = new JArrayObj();
+				map.put("studentNumber", "no such a user  found");
+				array.add(map);
+				Status s  = new Status ();
+				s.setCode(501);
+				s.setMsg(array);
+				return s;
+			}
+			Assignment newAssignment = new Assignment();
+			newAssignment.setSubActivityId(activityId);
+			newAssignment.setUserId(user.getId());
+			newAssignment.setChecked(1);
+			assignmentDAO.add(newAssignment);
+			assignmentDAO.remove(assgnment.getId());
+			return Status.OK();
+		}catch(DAOException e){
+			e.printStackTrace();
+			return Status.Error(500, null);
+		}
 	}
 
 }

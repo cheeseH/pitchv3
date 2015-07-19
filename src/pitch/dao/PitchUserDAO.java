@@ -8,4 +8,5 @@ public interface PitchUserDAO {
 	public void remove(int userId);
 	public void update(PitchUser user);
 	public PitchUser getById(int UserId);
+	public PitchUser getByStudentNumber(String studentNumber);
 }

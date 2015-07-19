@@ -77,4 +77,15 @@ public class AssignmentDAOHibImpl implements AssignmentDAO {
 		
 	}
 
+	@Override
+	@Transactional
+	public Assignment getByActivityAndUserId(int activityId, int userId) {
+		// TODO Auto-generated method stub
+		try{
+			return (Assignment)this.sessionFactory.openSession().createQuery("from Assignment as a where a.userId = ? and a.subPitchActivityId = ?").setInteger(0, userId).setInteger(1, activityId).uniqueResult();
+		}catch(HibernateException e){
+			throw new DAOException(e);
+		}
+	}
+
 }
