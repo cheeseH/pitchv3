@@ -1,22 +1,28 @@
 package pitch.action;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.xiao.util.json.xjson.JArrayObj;
 import com.xiao.util.json.xjson.JMapObj;
+import com.xiao.util.json.xjson.JSONObj;
+import com.xiao.util.json.xjson.JSONObjFactory;
 
+import net._100steps.bbter.service.api.rmi.UserManagerRO;
 import pitch.manager.Status;
 import pitch.manager.TimeTableManager;
 
 public class TimeTableAction extends ActionSupport {
 	TimeTableManager timeTableManager;
-	HttpServletRequest request = ServletActionContext.getRequest();
 	/**
 	 * 
 	 */
@@ -25,17 +31,17 @@ public class TimeTableAction extends ActionSupport {
 	
 	public  String getTimeTable(){
 		Map<String, Object> parameters = ActionContext.getContext().getParameters();
-		int userId = ((Integer[])parameters.get("userId"))[0].intValue();
+		int userId = Integer.parseInt(((String[])parameters.get("userId"))[0]);
 		Status status = timeTableManager.getTimeTable(userId);
 		JMapObj jMap = new JMapObj();
 		jMap.put("code", status.getCode());
 		JArrayObj msg = (JArrayObj)status.getMsg();
 		if(status.isOk()){
 			jMap.put("data", msg);
-		}else if(status.getCode() != 500){
+		}else{
 			jMap.put("msg", msg);
 		}
-		request.setAttribute("timeTable", jMap);
+		ActionContext.getContext().put("timeTable", jMap);
 		if(status.isOk()){
 			return "success";
 		}else{
@@ -46,9 +52,16 @@ public class TimeTableAction extends ActionSupport {
 	
 	public String editTimeTable(){
 		Map<String, Object> parameters = ActionContext.getContext().getParameters();
-		int userId = ((Integer[])parameters.get("userId"))[0].intValue();
-		int timeTable = ((Integer[])parameters.get("timeTable"))[0].intValue();
-//		timeTableManager.EditTimeTable(timeList, userId)
+		int userId = Integer.parseInt(((String[])parameters.get("userId"))[0]);
+		JSONObject Json = new JSONObject(((String[])parameters.get("date"))[0]);
+		String table = (String) Json.get("table");
+		Map<Integer,Integer> timeList = new HashMap<Integer,Integer>();
+		for(int i = 0 ; i < 42 ; i++){
+			timeList.put(i+1, Integer.parseInt(table.charAt(i)+""));
+		}
+		Status status = timeTableManager.EditTimeTable(timeList, userId);
+		ActionContext.getContext().put("code", status.getCode());
+		ActionContext.getContext().put("msg", status.getMsg());
 		return "result";
 	}
 	

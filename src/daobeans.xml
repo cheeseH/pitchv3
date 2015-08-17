@@ -25,4 +25,8 @@
 		class="pitch.dao.hibernateImpl.TimeTableDAOHibImpl">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	<bean id="assignmentDAO"
+		class="pitch.dao.hibernateImpl.AssignmentDAOHibImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>	
+	</bean>
 </beans>

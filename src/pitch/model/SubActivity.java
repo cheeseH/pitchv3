@@ -16,8 +16,7 @@ public class SubActivity {
 	int lession;
 	int day;
 	int header;
-	int needDepartmentId;
-	int boyFirst;
+
 	int needNumber;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,20 +61,6 @@ public class SubActivity {
 	}
 	public void setHeader(int header) {
 		this.header = header;
-	}
-	@Column(name="needDepartmentId")
-	public int getNeedDepartmentId() {
-		return needDepartmentId;
-	}
-	public void setNeedDepartmentId(int needDepartmentId) {
-		this.needDepartmentId = needDepartmentId;
-	}
-	@Column(name="boyFirst")
-	public int getBoyFirst() {
-		return boyFirst;
-	}
-	public void setBoyFirst(int boyFirst) {
-		this.boyFirst = boyFirst;
 	}
 	@Column(name="needNumber")
 	public int getNeedNumber() {
