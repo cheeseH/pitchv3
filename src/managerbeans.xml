@@ -23,7 +23,7 @@
 	</bean>
 	
 <bean id="roFactory"
-		class="net._100steps.labelsys.service.api.rmi.ROFactory">
+		class="net._100steps.bbter.service.api.rmi.defaultImpl.ROFactory">
 		<constructor-arg value="//localhost"/>
 		<constructor-arg value="8199"/>
 	</bean>

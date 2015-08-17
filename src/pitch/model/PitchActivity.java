@@ -12,6 +12,9 @@ public class PitchActivity {
 	int id;
 	String name;
 	String detail;
+	int needDepartmentId;
+	int boyFirst;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable=false)
@@ -34,5 +37,19 @@ public class PitchActivity {
 	}
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+	@Column(name="needDepartmentId",columnDefinition="int")
+	public int getNeedDepartmentId() {
+		return needDepartmentId;
+	}
+	public void setNeedDepartmentId(int needDepartmentId) {
+		this.needDepartmentId = needDepartmentId;
+	}
+	@Column(name="boyFirst")
+	public int getBoyFirst() {
+		return boyFirst;
+	}
+	public void setBoyFirst(int boyFirst) {
+		this.boyFirst = boyFirst;
 	}
 }

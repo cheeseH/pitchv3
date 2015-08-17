@@ -1,5 +1,6 @@
 package pitch.manager.defaultImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -27,17 +28,20 @@ public class TimeTableManagerDefaultImpl implements TimeTableManager {
 			for(Entry<Integer,Integer> entry : timeList.entrySet()){
 				if(entry.getValue().intValue() == 1){
 					int key = entry.getKey().intValue();
-					int date = (key-1)/5+1;
-					int lession = (key-1)%5+1;
+					int date = (key-1)/6+1;
+					int lession = (key-1)%6+1;
 					t.addLession(date, lession);
 				}
 			}
+			t.setState(0);
 			TimeTable timeTable = timeTableDAO.getByUserId(userId);
 			if(timeTable == null){
 				timeTableDAO.add(t);
 			}else{
+				t.setTable(timeTable.getTable());
 				timeTableDAO.update(t);
 			}
+			
 		}catch(DAOException e){
 			Status s = new Status();
 			s.setCode(500);
@@ -53,13 +57,15 @@ public class TimeTableManagerDefaultImpl implements TimeTableManager {
 		try{
 			TimeTable timeTable = timeTableDAO.getByUserId(userId);
 			if(timeTable == null){
-				throw new DAOException(); 
+				Map<String,Integer> error = new HashMap<String,Integer>();
+				error.put("timeTable", 402);
+				return Status.Error(501, error);
 			}
-			int table = timeTable.getTable();
+			long table = timeTable.getTable();
 			JArrayObj msg = new JArrayObj();
-			for(int i = 0 ; i < 25 ; i++){
+			for(int i = 0 ; i < 42 ; i++){
 				JMapObj jMap = new JMapObj();
-				jMap.put((i+1)+"", table&(1<<i));
+				jMap.put((i+1)+"", (table&(1<<i))>>i);
 				msg.add(jMap);
 			}
 			Status status = new Status();

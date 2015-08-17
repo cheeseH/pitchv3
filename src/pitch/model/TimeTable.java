@@ -12,11 +12,15 @@ import javax.persistence.Table;
 public class TimeTable {
 	int id;
 	int userId;
-	int table;
+	long table;
+	long newTable;
+	int state;
 	public TimeTable(){
 		id = 0;
 		userId = 0;
 		table = 0;
+		newTable = 0;
+		state = -1;
 	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,23 +39,37 @@ public class TimeTable {
 		this.userId = userId;
 	}
 	@Column(name="table")
-	public int getTable() {
+	public long getTable() {
 		return table;
 	}
-	public void setTable(int table) {
+	public void setTable(long table) {
 		this.table = table;
 	}
+	@Column(name = "newTable")
+	public long getNewTable() {
+		return newTable;
+	}
+	public void setNewTable(long newTable) {
+		this.newTable = newTable;
+	}
+	@Column(name = "state")
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
 	public void addLession(int date,int lession){
-		int init = 1;
+		long init = 1;
 		int destLession = (date-1)*5+lession-1;
 		init<<=destLession;
-		this.table |= destLession;
+		this.newTable |= destLession;
 	}
 	
 	public void removeLession(int date,int lession){
-		int init = 1;
+		long init = 1;
 		int destLession = (date-1)*11+lession-1;
 		init<<=destLession;
-		this.table ^= destLession;
+		this.newTable ^= destLession;
 	}
 }

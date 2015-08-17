@@ -14,5 +14,7 @@
 	<bean id="activityAction"
 		class="pitch.action.ActivityAction" scope="prototype">
 		<property name="activityManager" ref="activityManager"></property>
+		<property name="departmentManagerRO" ref="departmentManagerRO"></property>
+		<property name="userManagerRO" ref="userManagerRO"></property>
 	</bean>
 </beans>

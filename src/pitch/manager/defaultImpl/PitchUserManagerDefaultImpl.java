@@ -1,5 +1,6 @@
 package pitch.manager.defaultImpl;
 
+<<<<<<< HEAD
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class PitchUserManagerDefaultImpl implements PitchUserManager{
 
 
 	public void setPitchUserDAO(PitchUserDAO pitchUserDAO) {
-		this.pitchUserDAO = pitchUserDAO;
+		this.pitchUserDAO = pitchUserDAO
 	}
 
 }

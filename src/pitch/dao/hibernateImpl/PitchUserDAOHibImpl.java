@@ -9,7 +9,6 @@ import pitch.dao.PitchUserDAO;
 import pitch.model.PitchUser;
 
 public class PitchUserDAOHibImpl implements PitchUserDAO {
-
 	
 	SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -25,7 +24,6 @@ public class PitchUserDAOHibImpl implements PitchUserDAO {
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
-	}
 
 	@Override
 	public void remove(int userId) {
@@ -35,7 +33,7 @@ public class PitchUserDAOHibImpl implements PitchUserDAO {
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
-		
+	
 	}
 
 	@Override
@@ -66,6 +64,8 @@ public class PitchUserDAOHibImpl implements PitchUserDAO {
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
+
 	}
+
 
 }
