@@ -24,7 +24,7 @@ public class PitchUserDAOHibImpl implements PitchUserDAO {
 		}catch(HibernateException e){
 			throw new DAOException(e);
 		}
-
+	}
 	@Override
 	public void remove(int userId) {
 		// TODO Auto-generated method stub
