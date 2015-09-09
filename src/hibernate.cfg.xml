@@ -22,7 +22,6 @@
 		<property name="connection.useUnicode">true</property>
 		<property name="connection.characterEncoding">UTF-8</property>
 		
-		
 
 	</session-factory>
 

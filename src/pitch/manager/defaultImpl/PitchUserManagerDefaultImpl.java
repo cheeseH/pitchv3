@@ -1,6 +1,5 @@
 package pitch.manager.defaultImpl;
 
-<<<<<<< HEAD
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -72,14 +71,47 @@ public class PitchUserManagerDefaultImpl implements PitchUserManager{
 		}
 		
 	}
-
+	@Override
+	public Status searchAll() {
+		// TODO Auto-generated method stub
+		List<PitchUser> userList = pitchUserDAO.getAll();
+		Status s = new Status();
+		s.setCode(201);
+		s.setSuccess(true);
+		JArrayObj array = new JArrayObj();
+		JMapObj map = new JMapObj();
+		map.put("userList", userList);
+		array.add(map);
+		s.setMsg(array);
+		return s;
+	}
+	@Override
+	public void updatePitchUser(PitchUser user){
+		pitchUserDAO.update(user);
+	}
 	public void setUserManagerRO(UserManagerRO userManagerRO) {
 		this.userManagerRO = userManagerRO;
 	}
 
 
 	public void setPitchUserDAO(PitchUserDAO pitchUserDAO) {
-		this.pitchUserDAO = pitchUserDAO
+		this.pitchUserDAO = pitchUserDAO;
 	}
+	@Override
+	public Status getById(int id) {
+		// TODO Auto-generated method stub
+		PitchUser user = pitchUserDAO.getById(id);
+		Status s = new Status();
+		s.setCode(200);
+		s.setSuccess(true);
+		JArrayObj obj = new JArrayObj();
+		JMapObj map = new JMapObj();
+		map.put("user", user);
+		obj.add(map);
+		s.setMsg(obj);
+		return s;
+	}
+
+	
 
 }

@@ -21,6 +21,11 @@
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	
+	<bean id="pitchUserDAO"
+		class="pitch.dao.hibernateImpl.PitchUserDAOHibImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
 	<bean id="timeTableDAO"
 		class="pitch.dao.hibernateImpl.TimeTableDAOHibImpl">
 		<property name="sessionFactory" ref="sessionFactory"></property>

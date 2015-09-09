@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONObject;
@@ -120,11 +122,27 @@ public class ActivityAction extends ActionSupport {
 			JArrayObj msg2 = statusActivity.getMsg();
 			JMapObj jmap2 = (JMapObj)msg2.get(0);
 			PitchActivity pitchActivity = (PitchActivity) jmap2.get("pitchActivity");
-			List<PitchUser> userList = pitchUserManager.searchAll();
-			
-			Map<Integer, SubActivity> distributionChooseUser = distributionChooseUser(pitchActivity,subActivityList,userList);
-			
-			activityManager.assign(distributionChooseUser);
+			Status s = pitchUserManager.searchAll();
+			if(s.isOk()){
+				JArrayObj array = s.getMsg();
+				JMapObj map = (JMapObj) array.get(0);
+				List<PitchUser> userList = (List<PitchUser>) map.get("userList");
+				Map<Integer, SubActivity> distributionChooseUser = distributionChooseUser(pitchActivity,subActivityList,userList);
+				activityManager.assign(distributionChooseUser);
+				for(Entry<Integer,SubActivity> entry : distributionChooseUser.entrySet()){
+					int userid = entry.getKey();
+					try{
+						Status pitchUserStatus = pitchUserManager.getById(userid);
+						JMapObj pitchUserMap = (JMapObj)pitchUserStatus.getMsg().get(0);
+						PitchUser choosedUser = (PitchUser) pitchUserMap.get("user");
+						choosedUser.setPitchTimes(choosedUser.getPitchTimes()+1);
+						pitchUserManager.updatePitchUser(choosedUser);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					
+				}
+			}
 			return "success";
 		} catch (RuntimeException e) {
 			// TODO Auto-generated catch block
@@ -138,103 +156,101 @@ public class ActivityAction extends ActionSupport {
 	 * 初步筛选摆摊人员
 	 */
 	public Map<Integer,SubActivity> distributionChooseUser(PitchActivity pitchActivity,List<SubActivity> subActivityList,List<PitchUser> userList){
-		try{
 		Map<SubActivity,List<PitchUser>> map = new HashMap<SubActivity,List<PitchUser>> ();
 		for(SubActivity sa : subActivityList){
 			List<PitchUser> subUserList = new ArrayList<PitchUser>();
 			int day = sa.getDay();
 			int lession = sa.getLession();
-			int needDepartmentId = pitchActivity.getNeedDepartmentId();
 			for(PitchUser user : userList){
-				List<Integer> l = new ArrayList<Integer>();
-				l.add(user.getId());
-				Message userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
-				List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
-				Department department = data.get(0).getDepartment();
-				if(((needDepartmentId&(1<<department.getId()))>>1)==1){
-					Status status = timeTableManager.getTimeTable(user.getId());
-					JMapObj jmap = (JMapObj) status.getMsg().get(0);
-					int hasClass = (int) jmap.get(day*6+lession+"");
-					if(hasClass == 0){
-						subUserList.add(user);
-					}
+				Status status = timeTableManager.getTimeTable(user.getId());
+				JArrayObj obj = status.getMsg();
+				JMapObj jmap = (JMapObj) obj.get(0);
+				long hasClass = (Long) jmap.get(day*6+lession+"");
+				if(hasClass == 0){
+					subUserList.add(user);
 				}
-				
 			}
 			Collections.sort(subUserList,new Comparator<PitchUser>(){
 
 				@Override
 				public int compare(PitchUser o1, PitchUser o2) {
 					// TODO Auto-generated method stub
-					return -(o1.getPitchTimes()-o2.getPitchTimes());
+					return (o1.getPitchTimes()-o2.getPitchTimes());
 				}
 				
 			});
+			if(pitchActivity.getBoyFirst()==1){
+				List<PitchUser> girlList = new ArrayList<PitchUser>(); 
+				for(PitchUser user : subUserList){
+					List<Integer> l = new ArrayList<Integer>();
+					l.add(user.getId());
+					Message userDetailsByUserId;
+					try {
+						userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
+						List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
+						if(data.get(0).getUserDetail().getSex().equals("FEMALE")){
+							girlList.add(user);
+						}
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				subUserList.removeAll(girlList);
+				for(PitchUser user : girlList){
+					subUserList.add(user);
+				}
+			}
+			
 			map.put(sa, subUserList);
 		}
+		
 		return distributionAchieve(pitchActivity,map);
-		}catch(RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
 	}
 	public Map<Integer,SubActivity> distributionAchieve(PitchActivity pitchActivity,Map<SubActivity,List<PitchUser>> subUserList){
-		Map<Integer,SubActivity> hasChoosed = new HashMap<Integer,SubActivity>();
+		Map<Integer,SubActivity> hasChoosed = new ConcurrentHashMap<Integer,SubActivity>();
 		List<Conflict> conflict = new ArrayList<Conflict>(); 
 		try{
 		for(Entry<SubActivity,List<PitchUser>> entry:subUserList.entrySet()){
 			List<PitchUser> value = entry.getValue();
 			SubActivity subActivity = entry.getKey();
-			int subAcitivityId = subActivity.getId();
 			int needNum = subActivity.getNeedNumber();
 			int needDepartmentId = pitchActivity.getNeedDepartmentId();
 			for (int i = 0; i < needNum; i++) {
-				
-				for(PitchUser user : value){
-					if(needDepartmentId!=0){
-						List<Integer> l = new ArrayList<Integer>();
-						l.add(user.getId());
-						Message userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
-						List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
-						Department department = data.get(0).getDepartment();
-						if(((needDepartmentId&(1<<department.getId()))>>department.getId())==1){
-							if(!hasChoosed.containsKey(user.getId())){
-								hasChoosed.put(user.getId(), subActivity);
-								value.remove(user);
-								break;
-							}else{
-								Conflict con = new Conflict();
-								con.setUserId(user.getId());
-								con.setSubActivity(subActivity);
-								con.setDepartmentId(department.getId());
-								con.setUerList(value);
-								conflict.add(con);
-								
-								
-								value.remove(user);
-								
-							}
-							needDepartmentId ^= 1<<department.getId();
-						}
-					}else{
+				PitchUser user = value.get(i);
+				if(needDepartmentId!=0){
+					List<Integer> l = new ArrayList<Integer>();
+					l.add(user.getId());
+					Message userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
+					List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
+					Department department = data.get(0).getDepartment();
+					if(((needDepartmentId&(1<<(department.getId()-1)))>>(department.getId()-1))==1){
 						if(!hasChoosed.containsKey(user.getId())){
 							hasChoosed.put(user.getId(), subActivity);
 							value.remove(user);
-							break;
 						}else{
 							Conflict con = new Conflict();
 							con.setUserId(user.getId());
 							con.setSubActivity(subActivity);
-							con.setDepartmentId(0);
+							con.setDepartmentId(department.getId());
 							con.setUerList(value);
 							conflict.add(con);
-							
-							
 							value.remove(user);
 						}
+						needDepartmentId ^= 1<<(department.getId()-1);
 					}
-					
+				}else{
+					if(!hasChoosed.containsKey(user.getId())){
+						hasChoosed.put(user.getId(), subActivity);
+						value.remove(user);
+					}else{
+						Conflict con = new Conflict();
+						con.setUserId(user.getId());
+						con.setSubActivity(subActivity);							con.setDepartmentId(0);
+						con.setUerList(value);
+						conflict.add(con);
+						value.remove(user);
+					}
 				}
 			}
 			
@@ -248,51 +264,56 @@ public class ActivityAction extends ActionSupport {
 			}
 			
 		});
-		for (Conflict con : conflict) {
-			List<PitchUser> userList = con.getUerList();
-			if(userList.size()==0){
-				Conflict e = new Conflict();
-				SubActivity subActivity = hasChoosed.get(con.getUserId());
-				hasChoosed.put(con.getUserId(), con.getSubActivity());
-				conflict.remove(con);
-				e.setDepartmentId(con.getDepartmentId());
-				e.setUserId(con.getUserId());
-				e.setSubActivity(subActivity);
-				e.setUerList(subUserList.get(subActivity));
-				conflict.add(e);
-			}
-			if(con.getDepartmentId()!=0){
-				for (PitchUser user : userList) {
-					List<Integer> l = new ArrayList<Integer>();
-					l.add(user.getId());
-					Message userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
-					List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
-					Department department = data.get(0).getDepartment();
-					if(con.getDepartmentId()==department.getId()){
-						
-						
-						hasChoosed.remove(con.getUserId());
-						hasChoosed.put(user.getId(), con.getSubActivity());
-						conflict.remove(con);
-						userList.remove(user);
-						
+			List<Conflict> delList = new ArrayList<Conflict>();
+			List<Conflict> addList = new ArrayList<Conflict>();
+			for (Conflict con : conflict) {
+				List<PitchUser> userList = con.getUerList();
+				if(userList.size()==0){
+					Conflict e = new Conflict();
+					SubActivity subActivity = hasChoosed.get(con.getUserId());
+					hasChoosed.put(con.getUserId(), con.getSubActivity());
+					delList.add(con);
+					e.setDepartmentId(con.getDepartmentId());
+					e.setUserId(con.getUserId());
+					e.setSubActivity(subActivity);
+					e.setUerList(subUserList.get(subActivity));
+					addList.add(e);
+				}
+				else if(con.getDepartmentId()!=0){
+					List<PitchUser> delPUList = new ArrayList<PitchUser>();
+					for (PitchUser user : userList) {
+						List<Integer> l = new ArrayList<Integer>();
+						l.add(user.getId());
+						Message userDetailsByUserId = userManagerRO.getUserDetailsByUserId(l);
+						List<UserInfo> data = (List<UserInfo>) userDetailsByUserId.getDataTree().get(1).getData();
+						Department department = data.get(0).getDepartment();
+						if(con.getDepartmentId()==department.getId()){
+							hasChoosed.put(user.getId(), con.getSubActivity());
+							delList.add(con);
+							delPUList.add(user);
+							break;
+						}
 					}
+					userList.removeAll(delPUList);
+				}
+				else{
+					List<PitchUser> delPUList = new ArrayList<PitchUser>();
+					for (PitchUser user : userList) {
+						hasChoosed.put(user.getId(), con.getSubActivity());
+						delList.add(con);
+						delPUList.add(user);
+						break;
+					}
+					userList.removeAll(delPUList);
 				}
 			}
-			else{
-				for (PitchUser user : userList) {
-					hasChoosed.remove(con.getUserId());
-					hasChoosed.put(user.getId(), con.getSubActivity());
-					conflict.remove(con);
-					userList.remove(user);
-				}
-			}
-		}
+			conflict.removeAll(delList);
+			conflict.addAll(addList);
 		}catch(RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
 		return hasChoosed;
 	}
 	public String assign(){

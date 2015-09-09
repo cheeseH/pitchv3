@@ -16,5 +16,7 @@
 		<property name="activityManager" ref="activityManager"></property>
 		<property name="departmentManagerRO" ref="departmentManagerRO"></property>
 		<property name="userManagerRO" ref="userManagerRO"></property>
+		<property name="timeTableManager" ref="timeTableManager"></property>
+		<property name="pitchUserManager" ref="pitchUserManager"></property>
 	</bean>
 </beans>

@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-<<<<<<< HEAD
-=======
+
 import org.json.JSONObject;
 
->>>>>>> qiang
 import com.xiao.util.json.xjson.JArrayObj;
 import com.xiao.util.json.xjson.JMapObj;
 
@@ -32,6 +30,12 @@ public class ActivityManagerDefaultImpl implements ActivityManager {
 	SubActivityDAO subActivityDAO;
 	PitchUserDAO	pitchUserDAO;
 	AssignmentDAO assignmentDAO;
+	public void setPitchUserDAO(PitchUserDAO pitchUserDAO) {
+		this.pitchUserDAO = pitchUserDAO;
+	}
+	public void setAssignmentDAO(AssignmentDAO assignmentDAO) {
+		this.assignmentDAO = assignmentDAO;
+	}
 	public void setPitchActivityDAO(PitchActivityDAO pitchActivityDAO) {
 		this.pitchActivityDAO = pitchActivityDAO;
 	}
@@ -129,13 +133,15 @@ public class ActivityManagerDefaultImpl implements ActivityManager {
 	@Override
 	public Status assign(Map<Integer, SubActivity> request) {
 		// TODO Auto-generated method stub
-		Assignment assignment = new Assignment();
 		for(Entry<Integer,SubActivity> entry : request.entrySet()){
+			Assignment assignment = new Assignment();
 			assignment.setUserId(entry.getKey());
 			assignment.setSubActivityId(entry.getValue().getId());
+			assignment.setChecked(0);
+			assignment.setId(0);
 			assignmentDAO.add(assignment);
 		}
-		return null;
+		return Status.OK();
 	}
 
 	@Override

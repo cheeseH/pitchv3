@@ -54,15 +54,16 @@ public class TimeTableAction extends ActionSupport {
 		Map<String, Object> parameters = ActionContext.getContext().getParameters();
 		int userId = Integer.parseInt(((String[])parameters.get("userId"))[0]);
 		JSONObject Json = new JSONObject(((String[])parameters.get("date"))[0]);
-		String table = (String) Json.get("table");
+		String[][] table = (String[][]) Json.get("table");
 		Map<Integer,Integer> timeList = new HashMap<Integer,Integer>();
-		for(int i = 0 ; i < 42 ; i++){
-			timeList.put(i+1, Integer.parseInt(table.charAt(i)+""));
+		for(int i = 0 ; i < 7 ; i++){
+			for(int j = 0 ;j<6;j++){
+				timeList.put(i+1, Integer.parseInt(table[j][i]));
+			}
 		}
 		Status status = timeTableManager.EditTimeTable(timeList, userId);
 		ActionContext.getContext().put("code", status.getCode());
 		ActionContext.getContext().put("msg", status.getMsg());
 		return "result";
 	}
-	
 }

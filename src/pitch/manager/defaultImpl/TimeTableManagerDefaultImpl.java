@@ -63,15 +63,16 @@ public class TimeTableManagerDefaultImpl implements TimeTableManager {
 			}
 			long table = timeTable.getTable();
 			JArrayObj msg = new JArrayObj();
+			JMapObj jMap = new JMapObj();
 			for(int i = 0 ; i < 42 ; i++){
-				JMapObj jMap = new JMapObj();
 				jMap.put((i+1)+"", (table&(1<<i))>>i);
-				msg.add(jMap);
 			}
+			msg.add(jMap);
 			Status status = new Status();
 			status.setMsg(msg);
 			return status;
 		}catch(DAOException e){
+			e.printStackTrace();
 			Status s = new Status();
 			s.setCode(500);
 			s.setSuccess(false);

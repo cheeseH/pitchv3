@@ -20,12 +20,20 @@
 		class="pitch.manager.defaultImpl.ActivityManagerDefaultImpl">
 		<property name="pitchActivityDAO" ref="pitchActivityDAO"></property>
 		<property name="subActivityDAO" ref="subActivityDAO"></property>
+		<property name="pitchUserDAO" ref="pitchUserDAO"></property>
+		<property name="assignmentDAO" ref="assignmentDAO"></property>
+	</bean>
+	
+	<bean id="pitchUserManager"
+		class="pitch.manager.defaultImpl.PitchUserManagerDefaultImpl">
+		<property name="userManagerRO" ref="userManagerRO"></property>
+		<property name="pitchUserDAO" ref="pitchUserDAO"></property>	
 	</bean>
 	
 <bean id="roFactory"
 		class="net._100steps.bbter.service.api.rmi.defaultImpl.ROFactory">
 		<constructor-arg value="//localhost"/>
-		<constructor-arg value="8199"/>
+		<constructor-arg value="8599"/>
 	</bean>
 	
 	<bean id="userManagerRO"

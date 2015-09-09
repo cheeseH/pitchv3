@@ -15,5 +15,9 @@
 			<result name="success">/WEB-INF/JSP/success.jsp</result>
 			<result name="fail">/WEB-INF/JSP/fail.jsp</result>
 		</action>
+		<action name="distribution" class="activityAction" method="distribution">
+			<result name="success">/WEB-INF/JSP/success.jsp</result>
+			<result name="fail">/WEB-INF/JSP/fail.jsp</result>
+		</action>
 	</package>
 </struts>
